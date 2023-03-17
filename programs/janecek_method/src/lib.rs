@@ -31,9 +31,48 @@ pub mod janecek_method {
         voter.can_vote = true;
         Ok(())
     }
-    // pub fn vote(ctx: Context<Vote>)->Result<()>{
+    pub fn vote_positive(ctx: Context<Vote>)->Result<()>{
+        let voter: &mut Account<Voter> = &mut ctx.accounts.voter;
+        let party: &mut Account<Party> = &mut ctx.accounts.party;
 
-    // }
+        if voter.num_votes == 0
+        {
+            party.votes +=1;
+            voter.num_votes +=1;
+            voter.pos1 = ctx.accounts.party.key();
+            Ok(())
+        }
+        else if voter.num_votes == 1 && 
+                voter.can_vote == true && 
+                voter.pos1 != party.key()
+        {
+            party.votes +=1;
+            voter.num_votes +=1;
+            voter.pos2 = party.key();
+            Ok(())
+        }
+        else{
+            return Err(ErrorCode::NotAllowedOperation.into())
+        }
+
+
+    }
+    pub fn vote_negative(ctx: Context<Vote>)->Result<()>{
+        let voter: &mut Account<Voter> = &mut ctx.accounts.voter;
+        let party: &mut Account<Party> = &mut ctx.accounts.party;
+        if voter.num_votes == 2
+        {
+            voter.num_votes -=1;
+            party.votes -=1;
+            voter.can_vote = false;
+            voter.neg = ctx.accounts.party.key();
+            Ok(())
+        }
+        else {
+            return Err(ErrorCode::NotAllowedOperation.into())
+        }
+        
+    }
 
 }
 #[account]
@@ -66,6 +105,9 @@ impl Party {
 pub struct Voter{
     pub num_votes: i8,
     pub can_vote: bool,
+    pub pos1: Pubkey,
+    pub pos2: Pubkey,
+    pub neg: Pubkey,
 }
 
 #[derive(Accounts)]
@@ -86,11 +128,14 @@ pub struct CreateVoter<'info>{
     pub system_program: Program<'info, System>,
 
 }
-
-// #[derive(Accounts)]
-// pub struct Vote<'info>{
-//     #[account(mut,address=MY_PUBKEY @ )]
-// }
+#[derive(Accounts)]
+pub struct Vote<'info>{
+    #[account(mut,signer)]
+    pub voter: Account<'info,Voter>,
+    #[account(mut)]
+    pub party: Account<'info,Party>,
+    pub system_program: Program<'info, System>,
+}
 
 
 #[error_code]
@@ -99,4 +144,6 @@ pub enum ErrorCode {
     NameTooLong,
     #[msg("Only admin can add new Voters")]
     PermissionDenied,
+    #[msg("Operation not allowed")]
+    NotAllowedOperation,
 }
