@@ -1,5 +1,4 @@
 import * as anchor from "@project-serum/anchor";
-import { AnchorError,Program } from "@project-serum/anchor";
 import { JanecekMethod } from "../target/types/janecek_method";
 import { PublicKey, Keypair } from '@solana/web3.js'
 import * as assert from "assert";
@@ -16,7 +15,7 @@ describe("janecek_method", () => {
 
   anchor.setProvider(anchor.AnchorProvider.env());
 
-  const program = anchor.workspace.JanecekMethod as Program<JanecekMethod>;
+  const program = anchor.workspace.JanecekMethod as anchor.Program<JanecekMethod>;
   const new_voter = anchor.web3.Keypair.generate();
 
 
@@ -138,8 +137,8 @@ describe("janecek_method", () => {
           ]
         });
       } catch (error) {
-        assert.ok(error instanceof AnchorError);
-        assert.equal((error as AnchorError)
+        assert.ok(error instanceof anchor.AnchorError);
+        assert.equal((error as anchor.AnchorError)
         .error.errorCode.code, 'PermissionDenied');
       }
 
@@ -169,7 +168,7 @@ describe("janecek_method", () => {
     }
     const [pda,bump] = await PublicKey.findProgramAddress(
       [
-        anchor.utils.bytes.utf8.encode('political aprty'),
+        anchor.utils.bytes.utf8.encode('political party1'),
       ],
       program.programId
     )
@@ -271,8 +270,8 @@ describe("janecek_method", () => {
         ]
       });
     } catch (error) {
-      assert.ok(error instanceof AnchorError);
-      assert.equal((error as AnchorError)
+      assert.ok(error instanceof anchor.AnchorError);
+      assert.equal((error as anchor.AnchorError)
       .error.errorCode.code, 'NotAllowedOperation');
     }
 
