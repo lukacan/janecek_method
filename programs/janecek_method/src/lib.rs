@@ -34,24 +34,37 @@ pub mod janecek_method {
     pub fn vote_positive(ctx: Context<Vote>) -> Result<()> {
         let voter: &mut Account<Voter> = &mut ctx.accounts.voter;
         let party: &mut Account<Party> = &mut ctx.accounts.party;
-
-        if voter.num_votes == 0 {
+        
+        
+        if voter.can_vote == false{
+            // not able to vote
+            return Err(ErrorCode::NotAbleToVote.into());
+        }
+        else if voter.num_votes == 0 {
             party.votes += 1;
             voter.num_votes += 1;
             voter.pos1 = ctx.accounts.party.key();
-            Ok(())
-        } else if voter.num_votes == 1 && voter.can_vote == true && voter.pos1 != party.key() {
+            return Ok(())
+        }
+        else if voter.num_votes == 1 && voter.pos1 == party.key(){
+            // cant vote 2 times for one party
+            return Err(ErrorCode::NoTwoToOneParty.into());
+        }
+        else if voter.num_votes == 1 && voter.pos1 != party.key(){
             party.votes += 1;
             voter.num_votes += 1;
-            voter.pos2 = party.key();
-            Ok(())
-        } else {
-            return Err(ErrorCode::NotAllowedOperation.into());
+            voter.pos2 = ctx.accounts.party.key();
+            return Ok(())
+        }else{
+            // no more votes
+            return Err(ErrorCode::NotAbleToVote.into());
         }
     }
     pub fn vote_negative(ctx: Context<Vote>) -> Result<()> {
         let voter: &mut Account<Voter> = &mut ctx.accounts.voter;
         let party: &mut Account<Party> = &mut ctx.accounts.party;
+        
+        
         if voter.num_votes == 2 {
             voter.num_votes -= 1;
             party.votes -= 1;
@@ -59,7 +72,7 @@ pub mod janecek_method {
             voter.neg = ctx.accounts.party.key();
             Ok(())
         } else {
-            return Err(ErrorCode::NotAllowedOperation.into());
+            return Err(ErrorCode::NotAbleToVote.into());
         }
     }
 }
@@ -136,10 +149,12 @@ pub struct CreateParty<'info> {
 
 #[error_code]
 pub enum ErrorCode {
-    #[msg("Party Name Too Long")]
+    #[msg("Max name length exceeded")]
     NameTooLong,
-    #[msg("Only admin can add new Voters")]
-    PermissionDenied,
-    #[msg("Operation not allowed")]
-    NotAllowedOperation,
+    #[msg("No 2 positive votes to one party")]
+    NoTwoToOneParty,
+    #[msg("Vote positive first")]
+    VotePosFirst,
+    #[msg("Not able to vote")]
+    NotAbleToVote,
 }
