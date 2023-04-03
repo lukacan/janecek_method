@@ -47,6 +47,35 @@ async fn test_create_party(#[future] init_fixture: Result<Fixture>) {
     println!("{}", "party1 - strana created".green());
 }
 
+
+#[trdelnik_test]
+async fn test_create_delete_party(#[future] init_fixture: Result<Fixture>) {
+    let fixture = init_fixture.await?;
+    println!("{}", "Test create and delete Party".yellow());
+
+    create_party(
+        &fixture.client,
+        "party1 - strana".to_string(),
+        fixture.person1.pubkey(),
+        fixture.party1,
+        system_program::id(),
+        [fixture.person1.clone()],
+    )
+    .await?;
+
+    delete_party(
+        &fixture.client,
+        "party1 - strana".to_string(),
+        fixture.person1.pubkey(),
+        fixture.party1,
+        system_program::id(),
+        [fixture.person1.clone()],
+    )
+    .await?;
+    
+    println!("{}", "party1 - strana created and deleted".green());
+}
+
 #[trdelnik_test]
 async fn test_create_voter(#[future] init_fixture: Result<Fixture>) {
     let fixture = init_fixture.await?;
@@ -81,6 +110,37 @@ async fn test_create_tweet(#[future] init_fixture: Result<Fixture>) {
     )
     .await?;
     println!("{}", "New tweet created".green());
+}
+
+#[trdelnik_test]
+async fn test_create_delete_tweet(#[future] init_fixture: Result<Fixture>) {
+    let fixture = init_fixture.await?;
+    println!("{}", "Test create Tweet".yellow());
+
+    create_tweet(
+        &fixture.client,
+        fixture.timestamp,
+        "Tweet1 Topic1".to_string(),
+        "Tweet1 Content1".to_string(),
+        fixture.person1.pubkey(),
+        fixture.tweet1,
+        system_program::id(),
+        [fixture.person1.clone()],
+    )
+    .await?;
+
+
+    delete_tweet(
+        &fixture.client,
+        fixture.person1.pubkey(),
+        fixture.tweet1,
+        system_program::id(),
+        [fixture.person1.clone()],
+    )
+    .await?;
+
+
+    println!("{}", "Tweet created and deleted".green());
 }
 
 #[trdelnik_test]
@@ -210,9 +270,9 @@ async fn test_vote_pos(#[future] init_fixture: Result<Fixture>) {
         [fixture.person2.clone()],
     )
     .await?;
-    println!("New voter created");
+    //println!("New voter created");
 
-    println!("Creating Party");
+    //println!("Creating Party");
 
     create_party(
         &fixture.client,
@@ -223,9 +283,9 @@ async fn test_vote_pos(#[future] init_fixture: Result<Fixture>) {
         [fixture.person1.clone()],
     )
     .await?;
-    println!("party1 - strana created");
+    //println!("party1 - strana created");
 
-    println!("Voting positive for party1 - strana");
+    //println!("Voting positive for party1 - strana");
 
     vote_positive(
         &fixture.client,
@@ -257,9 +317,9 @@ async fn test_vote_neg_first(#[future] init_fixture: Result<Fixture>) {
         [fixture.person2.clone()],
     )
     .await?;
-    println!("New voter created");
+    //println!("New voter created");
 
-    println!("Creating Party");
+    //println!("Creating Party");
 
     create_party(
         &fixture.client,
@@ -270,9 +330,9 @@ async fn test_vote_neg_first(#[future] init_fixture: Result<Fixture>) {
         [fixture.person1.clone()],
     )
     .await?;
-    println!("party1 - strana created");
+    //println!("party1 - strana created");
 
-    println!("Voting negative for party1 - strana");
+    //println!("Voting negative for party1 - strana");
 
     let result = vote_negative(
         &fixture.client,
@@ -308,9 +368,9 @@ async fn test_vote_neg_second(#[future] init_fixture: Result<Fixture>) {
         [fixture.person2.clone()],
     )
     .await?;
-    println!("New voter created");
+    //println!("New voter created");
 
-    println!("Creating Party");
+    //println!("Creating Party");
 
     create_party(
         &fixture.client,
@@ -321,9 +381,9 @@ async fn test_vote_neg_second(#[future] init_fixture: Result<Fixture>) {
         [fixture.person1.clone()],
     )
     .await?;
-    println!("party1 - strana created");
+    //println!("party1 - strana created");
 
-    println!("Voting positive for party1 - strana");
+    //println!("Voting positive for party1 - strana");
 
     vote_positive(
         &fixture.client,
@@ -336,9 +396,9 @@ async fn test_vote_neg_second(#[future] init_fixture: Result<Fixture>) {
     )
     .await?;
 
-    println!("Voted positive successfuly for party1 - strana");
+    //println!("Voted positive successfuly for party1 - strana");
 
-    println!("Voting negative for party1 - strana");
+    //println!("Voting negative for party1 - strana");
 
     let result = vote_negative(
         &fixture.client,
@@ -374,9 +434,9 @@ async fn test_vote_pos_same_party(#[future] init_fixture: Result<Fixture>) {
         [fixture.person2.clone()],
     )
     .await?;
-    println!("New voter created");
+    //println!("New voter created");
 
-    println!("Creating Party");
+    //println!("Creating Party");
 
     create_party(
         &fixture.client,
@@ -387,9 +447,9 @@ async fn test_vote_pos_same_party(#[future] init_fixture: Result<Fixture>) {
         [fixture.person1.clone()],
     )
     .await?;
-    println!("party1 - strana created");
+    //println!("party1 - strana created");
 
-    println!("Voting positive for party1 - strana");
+    //println!("Voting positive for party1 - strana");
 
     vote_positive(
         &fixture.client,
@@ -402,9 +462,9 @@ async fn test_vote_pos_same_party(#[future] init_fixture: Result<Fixture>) {
     )
     .await?;
 
-    println!("Voted positive successfuly for party1 - strana");
+    //println!("Voted positive successfuly for party1 - strana");
 
-    println!("Voting positive for SAME party1 - strana");
+    //println!("Voting positive for SAME party1 - strana");
 
     let result = vote_positive(
         &fixture.client,
@@ -443,9 +503,9 @@ async fn test_vote_regular(#[future] init_fixture: Result<Fixture>) {
         [fixture.person2.clone()],
     )
     .await?;
-    println!("New voter created");
+    //println!("New voter created");
 
-    println!("Creating Party1");
+    //println!("Creating Party1");
 
     create_party(
         &fixture.client,
@@ -456,9 +516,9 @@ async fn test_vote_regular(#[future] init_fixture: Result<Fixture>) {
         [fixture.person1.clone()],
     )
     .await?;
-    println!("party1 - strana created");
+    //println!("party1 - strana created");
 
-    println!("Creating Party2");
+    //println!("Creating Party2");
 
     create_party(
         &fixture.client,
@@ -469,9 +529,9 @@ async fn test_vote_regular(#[future] init_fixture: Result<Fixture>) {
         [fixture.person2.clone()],
     )
     .await?;
-    println!("party2 - strana created");
+    //println!("party2 - strana created");
 
-    println!("Voting positive for party1 - strana");
+    //println!("Voting positive for party1 - strana");
 
     vote_positive(
         &fixture.client,
@@ -484,9 +544,9 @@ async fn test_vote_regular(#[future] init_fixture: Result<Fixture>) {
     )
     .await?;
 
-    println!("Voted positive successfuly for party1 - strana");
+    //println!("Voted positive successfuly for party1 - strana");
 
-    println!("Voting positive for party1 - strana");
+    //println!("Voting positive for party1 - strana");
 
     vote_positive(
         &fixture.client,
@@ -499,9 +559,9 @@ async fn test_vote_regular(#[future] init_fixture: Result<Fixture>) {
     )
     .await?;
 
-    println!("Voted positive successfuly for party1 - strana");
+    //println!("Voted positive successfuly for party1 - strana");
 
-    println!("Voting negative for party1 - strana");
+    //println!("Voting negative for party1 - strana");
 
     vote_negative(
         &fixture.client,
@@ -515,6 +575,7 @@ async fn test_vote_regular(#[future] init_fixture: Result<Fixture>) {
     .await?;
     println!("{}", "Regularly spent 3 votes successfuly".green())
 }
+
 
 struct Fixture {
     client: Client,

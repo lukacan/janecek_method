@@ -13,8 +13,8 @@ pub mod janecek_method {
     pub fn create_party(ctx: Context<CreateParty>, name: String) -> Result<()> {
         instructions::create_party(ctx, name)
     }
-    pub fn delete_party(ctx:Context<DeleteParty>)-> Result<()>{
-        instructions::delete_party(ctx)
+    pub fn delete_party(ctx:Context<DeleteParty>, name: String)-> Result<()>{
+        instructions::delete_party(ctx,name)
     }
     pub fn create_voter(ctx: Context<CreateVoter>) -> Result<()> {
         instructions::create_voter(ctx)

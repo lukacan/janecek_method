@@ -22,6 +22,6 @@ pub fn create_party(ctx: Context<CreateParty>, name: String) -> Result<()> {
     Ok(())
 }
 
-pub fn delete_party(_ctx: Context<DeleteParty>) -> Result<()> {
+pub fn delete_party(_ctx: Context<DeleteParty>, _name: String) -> Result<()> {
     Ok(())
 }

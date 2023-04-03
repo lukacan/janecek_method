@@ -39,9 +39,16 @@ pub struct CreateParty<'info> {
 
 
 #[derive(Accounts)]
+#[instruction(name: String)]
 pub struct DeleteParty<'info>{
+    #[account(mut)]
     pub author: Signer<'info>,
-    #[account(mut,has_one=author,close = author)]
+    #[account(
+        mut,
+        has_one=author,
+        close = author,
+        seeds=[name.as_bytes()],
+        bump=party.bump)]
     pub party: Account<'info,Party>,
     pub system_program: Program<'info, System>,    
 }

@@ -53,8 +53,12 @@ pub struct UpdateTweet<'info> {
 
 #[derive(Accounts)]
 pub struct DeleteTweet<'info>{
+    #[account(mut)]
     pub author: Signer<'info>,
-    #[account(mut,has_one=author,close = author)]
+    #[account(
+        mut,
+        has_one=author,
+        close = author)]
     pub tweet: Account<'info, Tweet>,
     pub system_program: Program<'info, System>,
 
