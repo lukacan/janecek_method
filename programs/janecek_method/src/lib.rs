@@ -5,7 +5,7 @@ pub mod states;
 pub mod instructions;
 pub mod error;
 
-declare_id!("Fnambs3f1XXoMmAVc94bf8t6JDAxmVkXz85XU4v2edph");
+declare_id!("Po1RaS8BEDbNcn5oXsFryAeQ6Wn8fvmE111DJaKCgPC");
 
 #[program]
 pub mod janecek_method {

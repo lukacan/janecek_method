@@ -2,13 +2,13 @@
 seeds = false
 skip-lint = false
 [programs.localnet]
-janecek_method = "Fnambs3f1XXoMmAVc94bf8t6JDAxmVkXz85XU4v2edph"
+janecek_method = "Po1RaS8BEDbNcn5oXsFryAeQ6Wn8fvmE111DJaKCgPC"
 
 [registry]
 url = "https://api.apr.dev"
 
 [provider]
-cluster = "devnet"
+cluster = "localnet"
 wallet = "/home/andrej/.config/solana/id.json"
 
 [scripts]
