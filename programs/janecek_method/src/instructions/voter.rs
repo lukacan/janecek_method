@@ -17,7 +17,11 @@ pub fn vote_positive(ctx: Context<Vote>, _name:String) -> Result<()> {
     let voter: &mut Account<Voter> = &mut ctx.accounts.voter;
     let party: &mut Account<Party> = &mut ctx.accounts.party;
 
-    require!(voter.num_votes > 1, ErrorCode::NoMoreVotes); 
+    require!(voter.num_votes > 1, ErrorCode::NoMoreVotes);
+    require!(party.voting_started == true, ErrorCode::VotingNotStartedYet); 
+    let now: Clock = Clock::get().unwrap();
+    require!(party.voting_ends >= now.unix_timestamp, ErrorCode::VotingAlreadyEnded); 
+
 
     if voter.num_votes == 3 {
         voter.num_votes -= 1;
@@ -38,8 +42,14 @@ pub fn vote_negative(ctx: Context<Vote>, _name:String) -> Result<()> {
     let voter: &mut Account<Voter> = &mut ctx.accounts.voter;
     let party: &mut Account<Party> = &mut ctx.accounts.party;
 
+
     require!(voter.num_votes>0, ErrorCode::NoMoreVotes); 
     require!(voter.num_votes <= 1, ErrorCode::VotePosFirst);
+    require!(party.voting_started == true, ErrorCode::VotingNotStartedYet); 
+    let now: Clock = Clock::get().unwrap();
+    require!(party.voting_ends >= now.unix_timestamp, ErrorCode::VotingAlreadyEnded); 
+
+
 
     if voter.num_votes == 1 {
         voter.num_votes -= 1;

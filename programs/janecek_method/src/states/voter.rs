@@ -52,6 +52,8 @@ pub struct Vote<'info> {
     #[account(
         mut,
         seeds=[name.as_bytes()],
+        constraint = party.voting_started == true @ ErrorCode::VotingNotStartedYet,
+        constraint = party.voting_ends >= Clock::get().unwrap().unix_timestamp @ ErrorCode::VotingAlreadyEnded,
         bump = party.bump)]
     pub party: Account<'info, Party>,
     pub system_program: Program<'info, System>,

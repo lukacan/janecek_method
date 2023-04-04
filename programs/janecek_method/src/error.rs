@@ -16,4 +16,12 @@ pub enum ErrorCode {
     ContentTooLong,
     #[msg("Empty input")]
     EmptyInput,
+    #[msg("Voting already started")]
+    VotingAlreadyStarted,
+    #[msg("Voting not started yet")]
+    VotingNotStartedYet,
+    #[msg("Voting already ended")]
+    VotingAlreadyEnded,
+    #[msg("Can`t delete party after voting started")]
+    CantDeleteDuringVoting,
 }

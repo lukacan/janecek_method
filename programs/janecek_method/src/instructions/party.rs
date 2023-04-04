@@ -16,9 +16,22 @@ pub fn create_party(ctx: Context<CreateParty>, name: String) -> Result<()> {
     party.bump = bump;
     party.author = *author.key;
     party.created = clock.unix_timestamp;
+    party.voting_started = false;
+    party.voting_ends = 0;
     party.name = name;
     party.votes = 0;
 
+    Ok(())
+}
+
+pub fn start_voting(ctx: Context<StartVoting>, _name: String) -> Result<()> {
+    let party: &mut Account<Party> = &mut ctx.accounts.party;
+
+    require!(party.voting_started == false,ErrorCode::VotingAlreadyStarted);
+    
+    let clock: Clock = Clock::get().unwrap();
+    party.voting_started = true;
+    party.voting_ends = clock.unix_timestamp + (7 * 24 * 60 * 60);
     Ok(())
 }
 

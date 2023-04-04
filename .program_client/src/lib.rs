@@ -44,6 +44,44 @@ pub mod janecek_method_instruction {
             .to_account_metas(None),
         }
     }
+    pub async fn start_voting(
+        client: &Client,
+        i_name: String,
+        a_author: anchor_lang::solana_program::pubkey::Pubkey,
+        a_party: anchor_lang::solana_program::pubkey::Pubkey,
+        a_system_program: anchor_lang::solana_program::pubkey::Pubkey,
+        signers: impl IntoIterator<Item = Keypair> + Send + 'static,
+    ) -> Result<EncodedConfirmedTransactionWithStatusMeta, ClientError> {
+        Ok(client
+            .send_instruction(
+                PROGRAM_ID,
+                janecek_method::instruction::StartVoting { name: i_name },
+                janecek_method::accounts::StartVoting {
+                    author: a_author,
+                    party: a_party,
+                    system_program: a_system_program,
+                },
+                signers,
+            )
+            .await?)
+    }
+    pub fn start_voting_ix(
+        i_name: String,
+        a_author: anchor_lang::solana_program::pubkey::Pubkey,
+        a_party: anchor_lang::solana_program::pubkey::Pubkey,
+        a_system_program: anchor_lang::solana_program::pubkey::Pubkey,
+    ) -> Instruction {
+        Instruction {
+            program_id: PROGRAM_ID,
+            data: janecek_method::instruction::StartVoting { name: i_name }.data(),
+            accounts: janecek_method::accounts::StartVoting {
+                author: a_author,
+                party: a_party,
+                system_program: a_system_program,
+            }
+            .to_account_metas(None),
+        }
+    }
     pub async fn delete_party(
         client: &Client,
         i_name: String,
